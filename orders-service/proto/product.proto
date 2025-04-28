@@ -1,0 +1,40 @@
+syntax = "proto3";
+
+package product;
+
+option go_package = "github.com/ramiroschettino/Go-Market-Microservices/product-service/proto/productpb";
+
+message Product {
+    int64 id = 1;
+    string name = 2;
+    string description = 3;
+    double price = 4;
+}
+
+// Request para crear un producto
+message CreateProductRequest {
+    string name = 1;
+    string description = 2;
+    double price = 3;
+}
+
+// Response para crear un producto
+message CreateProductResponse {
+    Product product = 1;
+}
+
+// Request para obtener un producto por ID
+message GetProductRequest {
+    int64 id = 1;
+}
+
+// Response para obtener un producto
+message GetProductResponse {
+    Product product = 1;
+}
+
+// Servicio que ofrece el ProductsService
+service ProductService {
+    rpc CreateProduct (CreateProductRequest) returns (CreateProductResponse);
+    rpc GetProduct (GetProductRequest) returns (GetProductResponse);
+}
