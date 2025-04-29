@@ -3,6 +3,8 @@ package main
 import (
 	"context"
 	"log"
+	"os"
+	"strconv"
 	"time"
 
 	productpb "github.com/ramiroschettino/Go-Market-Microservices/products-service/proto"
@@ -10,25 +12,40 @@ import (
 )
 
 func main() {
-	// Conectamos al servidor
+	if len(os.Args) < 4 {
+		log.Fatalf("Uso: go run cmd/client/main.go <nombre> <descripción> <precio>")
+	}
+
+	name := os.Args[1]
+	description := os.Args[2]
+	priceStr := os.Args[3]
+
+	price, err := strconv.ParseFloat(priceStr, 64)
+	if err != nil {
+		log.Fatalf("❌ Precio inválido: %v", err)
+	}
+
 	conn, err := grpc.Dial("localhost:50051", grpc.WithInsecure())
 	if err != nil {
-		log.Fatalf("No se pudo conectar: %v", err)
+		log.Fatalf("❌ No se pudo conectar a product service: %v", err)
 	}
 	defer conn.Close()
 
 	client := productpb.NewProductServiceClient(conn)
 
-	// Contexto con timeout
-	ctx, cancel := context.WithTimeout(context.Background(), time.Second*5)
+	ctx, cancel := context.WithTimeout(context.Background(), 5*time.Second)
 	defer cancel()
 
-	// Hacemos la llamada a GetProduct
-	req := &productpb.GetProductRequest{Id: 1234}
-	res, err := client.GetProduct(ctx, req)
-	if err != nil {
-		log.Fatalf("Error llamando a GetProduct: %v", err)
+	req := &productpb.CreateProductRequest{
+		Name:        name,
+		Description: description,
+		Price:       price,
 	}
 
-	log.Printf("Producto recibido: %+v", res.GetProduct())
+	res, err := client.CreateProduct(ctx, req)
+	if err != nil {
+		log.Fatalf("❌ Error al crear producto: %v", err)
+	}
+
+	log.Printf("🟢 Producto creado: %+v\n", res.GetProduct())
 }

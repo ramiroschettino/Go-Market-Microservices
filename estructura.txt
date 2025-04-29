@@ -1,0 +1,69 @@
+Listado de rutas de carpetas
+El n£mero de serie del volumen es C2D7-9C5E
+C:.
+|   estructura.txt
+|   README.md
+|   
++---orders-service
+|   |   .gitkeep
+|   |   go.mod
+|   |   go.sum
+|   |   
+|   +---cmd
+|   |   +---client
+|   |   |       main.go
+|   |   |       
+|   |   \---server
+|   |           main.go
+|   |           
+|   +---docker
+|   +---internal
+|   |   +---adapters
+|   |   |   +---db
+|   |   |   \---grpc
+|   |   +---app
+|   |   +---domain
+|   |   \---ports
+|   |       +---db
+|   |       \---grpc
+|   \---proto
+|       |   order.pb.go
+|       |   order.proto
+|       |   order_grpc.pb.go
+|       |   
+|       \---product
+|               product.pb.go
+|               product.proto
+|               product_grpc.pb.go
+|               
+\---products-service
+    |   .gitkeep
+    |   go.mod
+    |   go.sum
+    |   
+    +---cmd
+    |   +---client
+    |   |       main.go
+    |   |       
+    |   \---server
+    |           main.go
+    |           
+    +---docker
+    +---internal
+    |   +---adapters
+    |   |   +---db
+    |   |   \---grpc
+    |   +---app
+    |   +---domain
+    |   |       product.go
+    |   |       
+    |   \---ports
+    |       +---db
+    |       |       database.go
+    |       |       
+    |       \---grpc
+    \---proto
+            product.pb.go
+            product.proto
+            product_grpc.pb.go
+            

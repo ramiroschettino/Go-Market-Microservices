@@ -2,7 +2,7 @@ syntax = "proto3";
 
 package product;
 
-option go_package = "github.com/ramiroschettino/Go-Market-Microservices/product-service/proto/productpb";
+option go_package = "github.com/ramiroschettino/Go-Market-Microservices/orders-service/proto/product;productpb";
 
 message Product {
     int64 id = 1;
