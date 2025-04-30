@@ -9,6 +9,7 @@ import (
 
 	orderpb "github.com/ramiroschettino/Go-Market-Microservices/orders-service/proto"
 	"google.golang.org/grpc"
+	"google.golang.org/grpc/credentials/insecure"
 )
 
 type OrderRequest struct {
@@ -20,7 +21,7 @@ type OrderRequest struct {
 }
 
 func main() {
-	conn, err := grpc.Dial("localhost:50052", grpc.WithInsecure())
+	conn, err := grpc.Dial("orders-service:50052", grpc.WithTransportCredentials(insecure.NewCredentials()))
 	if err != nil {
 		log.Fatalf("❌ No se pudo conectar al server gRPC de órdenes: %v", err)
 	}

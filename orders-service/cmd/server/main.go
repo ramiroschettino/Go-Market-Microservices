@@ -5,12 +5,14 @@ import (
 	"fmt"
 	"log"
 	"net"
+	"time"
 
 	"github.com/ramiroschettino/Go-Market-Microservices/orders-service/internal/domain"
 	"github.com/ramiroschettino/Go-Market-Microservices/orders-service/internal/ports/db"
 	orderpb "github.com/ramiroschettino/Go-Market-Microservices/orders-service/proto"
 	productpb "github.com/ramiroschettino/Go-Market-Microservices/orders-service/proto/product"
 	"google.golang.org/grpc"
+	"google.golang.org/grpc/credentials/insecure"
 )
 
 type server struct {
@@ -42,7 +44,6 @@ func (s *server) CreateOrder(ctx context.Context, req *orderpb.CreateOrderReques
 		}
 	}
 
-	// 📝 Persistimos en la base de datos
 	order := domain.Order{
 		ProductID: product.Product.Id,
 		Quantity:  req.GetQuantity(),
@@ -65,19 +66,34 @@ func (s *server) CreateOrder(ctx context.Context, req *orderpb.CreateOrderReques
 }
 
 func main() {
-
 	db.Connect()
+
+	var conn *grpc.ClientConn
+	var err error
+	maxRetries := 3
+	for i := 0; i < maxRetries; i++ {
+		conn, err = grpc.Dial("products-service:50051",
+			grpc.WithTransportCredentials(insecure.NewCredentials()),
+			grpc.WithBlock(),
+			grpc.WithTimeout(5*time.Second))
+
+		if err == nil {
+			break
+		}
+
+		log.Printf("Intento %d: No se pudo conectar a products-service: %v", i+1, err)
+		time.Sleep(2 * time.Second)
+	}
+
+	if err != nil {
+		log.Fatalf("No se pudo conectar con products-service después de %d intentos: %v", maxRetries, err)
+	}
+	defer conn.Close()
 
 	lis, err := net.Listen("tcp", ":50052")
 	if err != nil {
-		log.Fatalf("Error al escuchar: %v", err)
+		log.Fatalf("Error al crear el listener: %v", err)
 	}
-
-	conn, err := grpc.Dial("localhost:50051", grpc.WithInsecure())
-	if err != nil {
-		log.Fatalf("No se pudo conectar con products-service: %v", err)
-	}
-	defer conn.Close()
 
 	productClient := productpb.NewProductServiceClient(conn)
 
@@ -91,6 +107,6 @@ func main() {
 	log.Println("📦 Order Service escuchando en puerto :50052...")
 
 	if err := grpcServer.Serve(lis); err != nil {
-		log.Fatalf("Error al servir: %v", err)
+		log.Fatalf("Error al iniciar el servidor gRPC: %v", err)
 	}
 }

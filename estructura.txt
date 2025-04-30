@@ -1,11 +1,13 @@
 Listado de rutas de carpetas
 El n£mero de serie del volumen es C2D7-9C5E
 C:.
+|   docker-compose.yml
 |   estructura.txt
 |   README.md
 |   
 +---orders-service
-|   |   .gitkeep
+|   |   Dockerfile
+|   |   entrypoint.sh
 |   |   go.mod
 |   |   go.sum
 |   |   
@@ -13,18 +15,24 @@ C:.
 |   |   +---client
 |   |   |       main.go
 |   |   |       
+|   |   +---http
+|   |   |       main.go
+|   |   |       
 |   |   \---server
 |   |           main.go
 |   |           
-|   +---docker
 |   +---internal
 |   |   +---adapters
 |   |   |   +---db
 |   |   |   \---grpc
 |   |   +---app
 |   |   +---domain
+|   |   |       order.go
+|   |   |       
 |   |   \---ports
 |   |       +---db
+|   |       |       database.go
+|   |       |       
 |   |       \---grpc
 |   \---proto
 |       |   order.pb.go
@@ -37,7 +45,7 @@ C:.
 |               product_grpc.pb.go
 |               
 \---products-service
-    |   .gitkeep
+    |   Dockerfile
     |   go.mod
     |   go.sum
     |   
@@ -48,7 +56,6 @@ C:.
     |   \---server
     |           main.go
     |           
-    +---docker
     +---internal
     |   +---adapters
     |   |   +---db

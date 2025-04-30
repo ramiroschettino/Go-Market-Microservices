@@ -10,6 +10,60 @@ services:
       - "5432:5432"
     volumes:
       - pgdata:/var/lib/postgresql/data
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U postgres"]
+      interval: 5s
+      timeout: 5s
+      retries: 10
+    networks:
+      - market-net
+
+  products-service:
+    build:
+      context: ./products-service
+      dockerfile: Dockerfile
+    container_name: products-service
+    ports:
+      - "50051:50051"
+    depends_on:
+      postgres:
+        condition: service_started
+    environment:
+      DB_HOST: pg-products
+      DB_USER: postgres
+      DB_PASSWORD: postgres
+      DB_NAME: products_db
+    healthcheck:
+      test: ["CMD", "/bin/grpc_health_probe", "-addr=:50051", "-tls=false"]
+      interval: 5s
+      timeout: 3s
+      retries: 5
+      start_period: 10s
+    networks:
+      - market-net
+
+  orders-service:
+    build:
+      context: ./orders-service
+      dockerfile: Dockerfile
+    container_name: orders-service
+    ports:
+      - "8080:8080"
+      - "50052:50052"
+    depends_on:
+      products-service:
+        condition: service_started
+    environment:
+      DB_HOST: pg-products
+      DB_USER: postgres
+      DB_PASSWORD: postgres
+      DB_NAME: products_db
+    networks:
+      - market-net
+
+networks:
+  market-net:
+    driver: bridge
 
 volumes:
   pgdata:
