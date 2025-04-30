@@ -5,56 +5,74 @@ import (
 	"fmt"
 	"log"
 	"net"
-	"sync"
 
+	"github.com/ramiroschettino/Go-Market-Microservices/orders-service/internal/domain"
+	"github.com/ramiroschettino/Go-Market-Microservices/orders-service/internal/ports/db"
 	orderpb "github.com/ramiroschettino/Go-Market-Microservices/orders-service/proto"
-	"google.golang.org/grpc"
-
 	productpb "github.com/ramiroschettino/Go-Market-Microservices/orders-service/proto/product"
+	"google.golang.org/grpc"
 )
 
 type server struct {
 	orderpb.UnimplementedOrderServiceServer
-	mu             sync.Mutex
-	orders         []*orderpb.Order
-	nextID         int64
 	productService productpb.ProductServiceClient
 }
 
 func (s *server) CreateOrder(ctx context.Context, req *orderpb.CreateOrderRequest) (*orderpb.CreateOrderResponse, error) {
-	// Verificamos que exista el producto
 	productReq := &productpb.GetProductRequest{Id: req.GetProductId()}
-	_, err := s.productService.GetProduct(ctx, productReq)
+	product, err := s.productService.GetProduct(ctx, productReq)
+
 	if err != nil {
-		log.Printf("❌ Producto no encontrado: %v", err)
-		return nil, fmt.Errorf("producto con ID %d no existe", req.GetProductId())
+		log.Printf("❌ Producto no encontrado, creando nuevo producto...")
+
+		createProductReq := &productpb.CreateProductRequest{
+			Name:        req.GetProductName(),
+			Description: req.GetProductDescription(),
+			Price:       req.GetProductPrice(),
+		}
+		createdProduct, err := s.productService.CreateProduct(ctx, createProductReq)
+		if err != nil {
+			log.Printf("❌ Error al crear el producto: %v", err)
+			return nil, fmt.Errorf("no se pudo crear el producto")
+		}
+		log.Printf("🟢 Producto creado: %v", createdProduct)
+
+		product = &productpb.GetProductResponse{
+			Product: createdProduct.Product,
+		}
 	}
 
-	// Si existe, seguimos
-	s.mu.Lock()
-	defer s.mu.Unlock()
-
-	s.nextID++
-	newOrder := &orderpb.Order{
-		Id:        s.nextID,
-		ProductId: req.GetProductId(),
+	// 📝 Persistimos en la base de datos
+	order := domain.Order{
+		ProductID: product.Product.Id,
 		Quantity:  req.GetQuantity(),
 	}
 
-	s.orders = append(s.orders, newOrder)
+	if err := db.DB.Create(&order).Error; err != nil {
+		log.Printf("❌ Error al guardar orden: %v", err)
+		return nil, err
+	}
 
-	log.Printf("🟢 Orden creada: %+v\n", newOrder)
+	log.Printf("🟢 Orden persistida: %+v\n", order)
 
-	return &orderpb.CreateOrderResponse{Order: newOrder}, nil
+	return &orderpb.CreateOrderResponse{
+		Order: &orderpb.Order{
+			Id:        int64(order.ID),
+			ProductId: order.ProductID,
+			Quantity:  order.Quantity,
+		},
+	}, nil
 }
 
 func main() {
+
+	db.Connect()
+
 	lis, err := net.Listen("tcp", ":50052")
 	if err != nil {
 		log.Fatalf("Error al escuchar: %v", err)
 	}
 
-	// ✅ Primero nos conectamos al products-service
 	conn, err := grpc.Dial("localhost:50051", grpc.WithInsecure())
 	if err != nil {
 		log.Fatalf("No se pudo conectar con products-service: %v", err)
@@ -63,10 +81,7 @@ func main() {
 
 	productClient := productpb.NewProductServiceClient(conn)
 
-	// ✅ Luego creamos el servidor con ese cliente
 	orderServer := &server{
-		orders:         []*orderpb.Order{},
-		nextID:         0,
 		productService: productClient,
 	}
 

@@ -4,7 +4,6 @@ package order;
 
 option go_package = "github.com/ramiroschettino/Go-Market-Microservices/orders-service/proto/orderpb";
 
-// Definimos el modelo del pedido
 message Order {
     int64 id = 1;
     int64 product_id = 2;
@@ -12,18 +11,19 @@ message Order {
     double total_price = 4;
 }
 
-// Request para crear un pedido
+
 message CreateOrderRequest {
-    int64 product_id = 1;
-    int32 quantity = 2;
+  int64 product_id = 1;
+  int32 quantity = 2;
+  string product_name = 3;
+  string product_description = 4;
+  double product_price = 5;
 }
 
-// Response para crear un pedido
 message CreateOrderResponse {
     Order order = 1;
 }
 
-// Servicio que ofrece el OrdersService
 service OrderService {
     rpc CreateOrder (CreateOrderRequest) returns (CreateOrderResponse);
 }

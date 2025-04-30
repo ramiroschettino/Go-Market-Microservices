@@ -90,13 +90,15 @@ func (x *Order) GetTotalPrice() float64 {
 	return 0
 }
 
-// Request para crear un pedido
 type CreateOrderRequest struct {
-	state         protoimpl.MessageState `protogen:"open.v1"`
-	ProductId     int64                  `protobuf:"varint,1,opt,name=product_id,json=productId,proto3" json:"product_id,omitempty"`
-	Quantity      int32                  `protobuf:"varint,2,opt,name=quantity,proto3" json:"quantity,omitempty"`
-	unknownFields protoimpl.UnknownFields
-	sizeCache     protoimpl.SizeCache
+	state              protoimpl.MessageState `protogen:"open.v1"`
+	ProductId          int64                  `protobuf:"varint,1,opt,name=product_id,json=productId,proto3" json:"product_id,omitempty"`
+	Quantity           int32                  `protobuf:"varint,2,opt,name=quantity,proto3" json:"quantity,omitempty"`
+	ProductName        string                 `protobuf:"bytes,3,opt,name=product_name,json=productName,proto3" json:"product_name,omitempty"`
+	ProductDescription string                 `protobuf:"bytes,4,opt,name=product_description,json=productDescription,proto3" json:"product_description,omitempty"`
+	ProductPrice       float64                `protobuf:"fixed64,5,opt,name=product_price,json=productPrice,proto3" json:"product_price,omitempty"`
+	unknownFields      protoimpl.UnknownFields
+	sizeCache          protoimpl.SizeCache
 }
 
 func (x *CreateOrderRequest) Reset() {
@@ -139,6 +141,27 @@ func (x *CreateOrderRequest) GetProductId() int64 {
 func (x *CreateOrderRequest) GetQuantity() int32 {
 	if x != nil {
 		return x.Quantity
+	}
+	return 0
+}
+
+func (x *CreateOrderRequest) GetProductName() string {
+	if x != nil {
+		return x.ProductName
+	}
+	return ""
+}
+
+func (x *CreateOrderRequest) GetProductDescription() string {
+	if x != nil {
+		return x.ProductDescription
+	}
+	return ""
+}
+
+func (x *CreateOrderRequest) GetProductPrice() float64 {
+	if x != nil {
+		return x.ProductPrice
 	}
 	return 0
 }
@@ -199,11 +222,14 @@ const file_order_proto_rawDesc = "" +
 	"product_id\x18\x02 \x01(\x03R\tproductId\x12\x1a\n" +
 	"\bquantity\x18\x03 \x01(\x05R\bquantity\x12\x1f\n" +
 	"\vtotal_price\x18\x04 \x01(\x01R\n" +
-	"totalPrice\"O\n" +
+	"totalPrice\"\xc8\x01\n" +
 	"\x12CreateOrderRequest\x12\x1d\n" +
 	"\n" +
 	"product_id\x18\x01 \x01(\x03R\tproductId\x12\x1a\n" +
-	"\bquantity\x18\x02 \x01(\x05R\bquantity\"9\n" +
+	"\bquantity\x18\x02 \x01(\x05R\bquantity\x12!\n" +
+	"\fproduct_name\x18\x03 \x01(\tR\vproductName\x12/\n" +
+	"\x13product_description\x18\x04 \x01(\tR\x12productDescription\x12#\n" +
+	"\rproduct_price\x18\x05 \x01(\x01R\fproductPrice\"9\n" +
 	"\x13CreateOrderResponse\x12\"\n" +
 	"\x05order\x18\x01 \x01(\v2\f.order.OrderR\x05order2T\n" +
 	"\fOrderService\x12D\n" +
