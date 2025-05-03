@@ -4,7 +4,7 @@
 // 	protoc        v6.30.1
 // source: product.proto
 
-package productpb
+package __
 
 import (
 	protoreflect "google.golang.org/protobuf/reflect/protoreflect"
@@ -89,7 +89,6 @@ func (x *Product) GetPrice() float64 {
 	return 0
 }
 
-// Request para crear un producto
 type CreateProductRequest struct {
 	state         protoimpl.MessageState `protogen:"open.v1"`
 	Name          string                 `protobuf:"bytes,1,opt,name=name,proto3" json:"name,omitempty"`
@@ -150,7 +149,6 @@ func (x *CreateProductRequest) GetPrice() float64 {
 	return 0
 }
 
-// Response para crear un producto
 type CreateProductResponse struct {
 	state         protoimpl.MessageState `protogen:"open.v1"`
 	Product       *Product               `protobuf:"bytes,1,opt,name=product,proto3" json:"product,omitempty"`
@@ -195,7 +193,6 @@ func (x *CreateProductResponse) GetProduct() *Product {
 	return nil
 }
 
-// Request para obtener un producto por ID
 type GetProductRequest struct {
 	state         protoimpl.MessageState `protogen:"open.v1"`
 	Id            int64                  `protobuf:"varint,1,opt,name=id,proto3" json:"id,omitempty"`
@@ -240,7 +237,6 @@ func (x *GetProductRequest) GetId() int64 {
 	return 0
 }
 
-// Response para obtener un producto
 type GetProductResponse struct {
 	state         protoimpl.MessageState `protogen:"open.v1"`
 	Product       *Product               `protobuf:"bytes,1,opt,name=product,proto3" json:"product,omitempty"`
@@ -308,7 +304,7 @@ const file_product_proto_rawDesc = "" +
 	"\x0eProductService\x12N\n" +
 	"\rCreateProduct\x12\x1d.product.CreateProductRequest\x1a\x1e.product.CreateProductResponse\x12E\n" +
 	"\n" +
-	"GetProduct\x12\x1a.product.GetProductRequest\x1a\x1b.product.GetProductResponseBTZRgithub.com/ramiroschettino/Go-Market-Microservices/product-service/proto/productpbb\x06proto3"
+	"GetProduct\x12\x1a.product.GetProductRequest\x1a\x1b.product.GetProductResponseB\x04Z\x02./b\x06proto3"
 
 var (
 	file_product_proto_rawDescOnce sync.Once

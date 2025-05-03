@@ -5,7 +5,7 @@ import (
 	"log"
 	"net"
 
-	productpb "github.com/ramiroschettino/Go-Market-Microservices/products-service/proto"
+	productpb "github.com/ramiroschettino/Go-Market-Microservices/common/proto"
 	"google.golang.org/grpc"
 	"gorm.io/gorm"
 

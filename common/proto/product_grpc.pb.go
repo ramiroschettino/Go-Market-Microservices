@@ -4,7 +4,7 @@
 // - protoc             v6.30.1
 // source: product.proto
 
-package productpb
+package __
 
 import (
 	context "context"
@@ -26,8 +26,6 @@ const (
 // ProductServiceClient is the client API for ProductService service.
 //
 // For semantics around ctx use and closing/ending streaming RPCs, please refer to https://pkg.go.dev/google.golang.org/grpc/?tab=doc#ClientConn.NewStream.
-//
-// Servicio que ofrece el ProductsService
 type ProductServiceClient interface {
 	CreateProduct(ctx context.Context, in *CreateProductRequest, opts ...grpc.CallOption) (*CreateProductResponse, error)
 	GetProduct(ctx context.Context, in *GetProductRequest, opts ...grpc.CallOption) (*GetProductResponse, error)
@@ -64,8 +62,6 @@ func (c *productServiceClient) GetProduct(ctx context.Context, in *GetProductReq
 // ProductServiceServer is the server API for ProductService service.
 // All implementations must embed UnimplementedProductServiceServer
 // for forward compatibility.
-//
-// Servicio que ofrece el ProductsService
 type ProductServiceServer interface {
 	CreateProduct(context.Context, *CreateProductRequest) (*CreateProductResponse, error)
 	GetProduct(context.Context, *GetProductRequest) (*GetProductResponse, error)

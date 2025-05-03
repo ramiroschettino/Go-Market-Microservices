@@ -7,10 +7,10 @@ import (
 	"net"
 	"time"
 
+	productpb "github.com/ramiroschettino/Go-Market-Microservices/common/proto"
 	"github.com/ramiroschettino/Go-Market-Microservices/orders-service/internal/domain"
 	"github.com/ramiroschettino/Go-Market-Microservices/orders-service/internal/ports/db"
 	orderpb "github.com/ramiroschettino/Go-Market-Microservices/orders-service/proto"
-	productpb "github.com/ramiroschettino/Go-Market-Microservices/orders-service/proto/product"
 	"google.golang.org/grpc"
 	"google.golang.org/grpc/credentials/insecure"
 )

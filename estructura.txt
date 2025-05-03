@@ -1,76 +1,68 @@
-Listado de rutas de carpetas
-El n£mero de serie del volumen es C2D7-9C5E
+Listado de rutas de carpetas para el volumen Windows
+El número de serie del volumen es B824-833F
 C:.
-|   docker-compose.yml
-|   estructura.txt
-|   README.md
-|   
+¦   .dockerignore
+¦   docker-compose.yml
+¦   estructura.txt
+¦   go.work
+¦   go.work.sum
+¦   README.md
+¦   
++---common
+¦   ¦   go.mod
+¦   ¦   go.sum
+¦   ¦   
+¦   +---proto
+¦           product.pb.go
+¦           product.proto
+¦           product_grpc.pb.go
+¦           
 +---orders-service
-|   |   Dockerfile
-|   |   entrypoint.sh
-|   |   go.mod
-|   |   go.sum
-|   |   
-|   +---cmd
-|   |   +---client
-|   |   |       main.go
-|   |   |       
-|   |   +---http
-|   |   |       main.go
-|   |   |       
-|   |   \---server
-|   |           main.go
-|   |           
-|   +---internal
-|   |   +---adapters
-|   |   |   +---db
-|   |   |   \---grpc
-|   |   +---app
-|   |   +---domain
-|   |   |       order.go
-|   |   |       
-|   |   \---ports
-|   |       +---db
-|   |       |       database.go
-|   |       |       
-|   |       \---grpc
-|   \---proto
-|       |   order.pb.go
-|       |   order.proto
-|       |   order_grpc.pb.go
-|       |   
-|       \---product
-|               product.pb.go
-|               product.proto
-|               product_grpc.pb.go
-|               
-\---products-service
-    |   Dockerfile
-    |   go.mod
-    |   go.sum
-    |   
+¦   ¦   Dockerfile
+¦   ¦   entrypoint.sh
+¦   ¦   go.mod
+¦   ¦   go.sum
+¦   ¦   
+¦   +---cmd
+¦   ¦   +---client
+¦   ¦   ¦       main.go
+¦   ¦   ¦       
+¦   ¦   +---http
+¦   ¦   ¦       main.go
+¦   ¦   ¦       
+¦   ¦   +---server
+¦   ¦           main.go
+¦   ¦           
+¦   +---internal
+¦   ¦   +---domain
+¦   ¦   ¦       order.go
+¦   ¦   ¦       
+¦   ¦   +---ports
+¦   ¦       +---db
+¦   ¦               database.go
+¦   ¦               
+¦   +---proto
+¦           order.pb.go
+¦           order.proto
+¦           order_grpc.pb.go
+¦           
++---products-service
+    ¦   Dockerfile
+    ¦   go.mod
+    ¦   go.sum
+    ¦   
     +---cmd
-    |   +---client
-    |   |       main.go
-    |   |       
-    |   \---server
-    |           main.go
-    |           
+    ¦   +---client
+    ¦   ¦       main.go
+    ¦   ¦       
+    ¦   +---server
+    ¦           main.go
+    ¦           
     +---internal
-    |   +---adapters
-    |   |   +---db
-    |   |   \---grpc
-    |   +---app
-    |   +---domain
-    |   |       product.go
-    |   |       
-    |   \---ports
-    |       +---db
-    |       |       database.go
-    |       |       
-    |       \---grpc
-    \---proto
-            product.pb.go
-            product.proto
-            product_grpc.pb.go
-            
+        +---domain
+        ¦       product.go
+        ¦       
+        +---ports
+            +---db
+                    database.go
+                    

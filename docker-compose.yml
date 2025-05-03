@@ -11,55 +11,61 @@ services:
     volumes:
       - pgdata:/var/lib/postgresql/data
     healthcheck:
-      test: ["CMD-SHELL", "pg_isready -U postgres"]
+      test: [ "CMD-SHELL", "pg_isready -U postgres -d products_db" ]
       interval: 5s
       timeout: 5s
-      retries: 10
+      retries: 20
+      start_period: 10s
     networks:
       - market-net
 
   products-service:
     build:
-      context: ./products-service
-      dockerfile: Dockerfile
+      context: .
+      dockerfile: products-service/Dockerfile
     container_name: products-service
     ports:
       - "50051:50051"
     depends_on:
       postgres:
-        condition: service_started
+        condition: service_healthy
     environment:
       DB_HOST: pg-products
       DB_USER: postgres
       DB_PASSWORD: postgres
       DB_NAME: products_db
-    healthcheck:
-      test: ["CMD", "/bin/grpc_health_probe", "-addr=:50051", "-tls=false"]
-      interval: 5s
-      timeout: 3s
-      retries: 5
-      start_period: 10s
+      DB_PORT: "5432"
+      DB_MAX_RETRIES: "10"
+      DB_RETRY_DELAY: "5"
     networks:
       - market-net
+    restart: unless-stopped
 
   orders-service:
     build:
-      context: ./orders-service
-      dockerfile: Dockerfile
+      context: .
+      dockerfile: orders-service/Dockerfile
     container_name: orders-service
     ports:
       - "8080:8080"
       - "50052:50052"
     depends_on:
+      postgres:
+        condition: service_healthy
       products-service:
-        condition: service_started
+        condition: service_started # Cambiado de healthy a started
     environment:
       DB_HOST: pg-products
       DB_USER: postgres
       DB_PASSWORD: postgres
       DB_NAME: products_db
+      DB_PORT: "5432"
+      PRODUCTS_SERVICE_URL: "products-service:50051"
+      DB_MAX_RETRIES: "10"
+      DB_RETRY_DELAY: "5"
     networks:
       - market-net
+    restart: unless-stopped
 
 networks:
   market-net:
