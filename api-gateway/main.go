@@ -36,12 +36,10 @@ func getServiceAddress() string {
 func setupRouter(orderClient *client.OrderClient) *gin.Engine {
 	r := gin.Default()
 
-	// Health check
 	r.GET("/health", func(c *gin.Context) {
 		c.JSON(200, gin.H{"status": "ok"})
 	})
 
-	// Order routes
 	orderHandler := &handler.OrderHandler{
 		OrderClient: orderClient,
 	}

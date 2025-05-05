@@ -27,6 +27,7 @@ Iniciar los servicios con Docker:
 
 bash
 docker-compose up --build -d
+renombrar .env.example a .env y cambiar las variables de entorno
 Verificar que todo esté funcionando:
 
 bash

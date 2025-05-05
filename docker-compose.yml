@@ -2,16 +2,17 @@ services:
   postgres:
     image: postgres:14
     container_name: pg-products
+    env_file: .env
     environment:
-      POSTGRES_USER: postgres
-      POSTGRES_PASSWORD: postgres
-      POSTGRES_DB: products_db
+      POSTGRES_USER: ${DB_USER}
+      POSTGRES_PASSWORD: ${DB_PASSWORD}
+      POSTGRES_DB: ${DB_NAME}
     ports:
       - "5432:5432"
     volumes:
       - pgdata:/var/lib/postgresql/data
     healthcheck:
-      test: ["CMD-SHELL", "pg_isready -U postgres -d products_db"]
+      test: ["CMD-SHELL", "pg_isready -U ${DB_USER} -d ${DB_NAME}"]
       interval: 5s
       timeout: 5s
       retries: 20
@@ -24,6 +25,7 @@ services:
       context: .
       dockerfile: products-service/Dockerfile
     container_name: products-service
+    env_file: .env
     ports:
       - "50051:50051"
     depends_on:
@@ -31,14 +33,14 @@ services:
         condition: service_started
     environment:
       DB_HOST: pg-products
-      DB_USER: postgres
-      DB_PASSWORD: postgres
-      DB_NAME: products_db
+      DB_USER: ${DB_USER}
+      DB_PASSWORD: ${DB_PASSWORD}
+      DB_NAME: ${DB_NAME}
       DB_PORT: "5432"
       DB_MAX_RETRIES: "10"
       DB_RETRY_DELAY: "5"
     healthcheck:
-      test: ["CMD-SHELL", "grpc_health_probe -addr=:50051"]
+      test: ["CMD-SHELL", "grpc_health_probe -addr=:50051 || exit 1"]
       interval: 10s
       timeout: 5s
       retries: 5
@@ -52,8 +54,9 @@ services:
       context: .
       dockerfile: orders-service/Dockerfile
     container_name: orders-service
+    env_file: .env
     ports:
-      - "50052:50052" 
+      - "50052:50052"
     depends_on:
       postgres:
         condition: service_started
@@ -61,15 +64,15 @@ services:
         condition: service_started
     environment:
       DB_HOST: pg-products
-      DB_USER: postgres
-      DB_PASSWORD: postgres
-      DB_NAME: products_db
+      DB_USER: ${DB_USER}
+      DB_PASSWORD: ${DB_PASSWORD}
+      DB_NAME: ${DB_NAME}
       DB_PORT: "5432"
       PRODUCTS_SERVICE_URL: "products-service:50051"
       DB_MAX_RETRIES: "10"
       DB_RETRY_DELAY: "5"
     healthcheck:
-      test: ["CMD-SHELL", "grpc_health_probe -addr=:50052 || wget -q -O - http://localhost:8080/health"]
+      test: ["CMD-SHELL", "grpc_health_probe -addr=:50052 || exit 1"]
       interval: 10s
       timeout: 5s
       retries: 5
@@ -84,7 +87,7 @@ services:
       dockerfile: Dockerfile
     container_name: api-gateway
     ports:
-      - "8080:8080"  
+      - "8080:8080"
     depends_on:
       orders-service:
         condition: service_started

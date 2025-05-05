@@ -15,7 +15,6 @@ import (
 var DB *gorm.DB
 
 func Connect() {
-	// Obtenemos todas las variables de entorno primero
 	dbConfig := map[string]string{
 		"DB_HOST":     os.Getenv("DB_HOST"),
 		"DB_USER":     os.Getenv("DB_USER"),
@@ -24,7 +23,6 @@ func Connect() {
 		"DB_PORT":     os.Getenv("DB_PORT"),
 	}
 
-	// Establecemos valores por defecto si no están en las variables de entorno
 	if dbConfig["DB_HOST"] == "" {
 		dbConfig["DB_HOST"] = "pg-products"
 	}
@@ -41,7 +39,6 @@ func Connect() {
 		dbConfig["DB_PORT"] = "5432"
 	}
 
-	// Configuración de reintentos (con valores por defecto)
 	retries := 5
 	if val := os.Getenv("DB_CONN_RETRIES"); val != "" {
 		if r, err := strconv.Atoi(val); err == nil {

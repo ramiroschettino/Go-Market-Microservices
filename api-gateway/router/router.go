@@ -10,7 +10,6 @@ func SetupRouter(orderClient any) *gin.Engine {
 	r := gin.Default()
 
 	r.POST("/orders", func(c *gin.Context) {
-		// En el futuro usaremos orderClient aquí
 		c.JSON(http.StatusOK, gin.H{
 			"message": "Aquí se creará una orden",
 		})
