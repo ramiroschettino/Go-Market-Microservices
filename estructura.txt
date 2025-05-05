@@ -1,7 +1,7 @@
 Listado de rutas de carpetas
-El n£mero de serie del volumen es C2D7-9C5E
 C:.
 |   .dockerignore
+|   docker-compose
 |   docker-compose.yml
 |   estructura.txt
 |   go.work

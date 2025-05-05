@@ -6,19 +6,20 @@ import (
 	"time"
 
 	"github.com/gin-gonic/gin"
-	"github.com/ramiroschettino/Go-Market-Microservices/api-gateway/clients"
+	"github.com/ramiroschettino/Go-Market-Microservices/api-gateway/internal/client"
 	orderpb "github.com/ramiroschettino/Go-Market-Microservices/orders-service/proto"
 )
 
 type OrderHandler struct {
-	OrderClient *clients.OrderClient
+	OrderClient *client.OrderClient
 }
 
 type CreateOrderInput struct {
+	ProductID          int64   `json:"product_id" binding:"required"`
+	Quantity           int32   `json:"quantity" binding:"required"`
 	ProductName        string  `json:"product_name" binding:"required"`
 	ProductDescription string  `json:"product_description" binding:"required"`
-	ProductPrice       float32 `json:"product_price" binding:"required"`
-	Quantity           int32   `json:"quantity" binding:"required"`
+	ProductPrice       float64 `json:"product_price" binding:"required"`
 }
 
 func (h *OrderHandler) CreateOrderHandler(c *gin.Context) {
@@ -32,10 +33,11 @@ func (h *OrderHandler) CreateOrderHandler(c *gin.Context) {
 	defer cancel()
 
 	req := &orderpb.CreateOrderRequest{
+		ProductId:          input.ProductID,
+		Quantity:           input.Quantity,
 		ProductName:        input.ProductName,
 		ProductDescription: input.ProductDescription,
 		ProductPrice:       input.ProductPrice,
-		Quantity:           input.Quantity,
 	}
 
 	resp, err := h.OrderClient.CreateOrder(ctx, req)
@@ -45,6 +47,9 @@ func (h *OrderHandler) CreateOrderHandler(c *gin.Context) {
 	}
 
 	c.JSON(http.StatusOK, gin.H{
-		"order_id": resp.OrderId,
+		"order_id":    resp.GetOrder().GetId(),
+		"product_id":  resp.GetOrder().GetProductId(),
+		"quantity":    resp.GetOrder().GetQuantity(),
+		"total_price": resp.GetOrder().GetTotalPrice(),
 	})
 }

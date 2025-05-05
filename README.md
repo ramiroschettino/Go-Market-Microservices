@@ -1,39 +1,96 @@
-# 🛒 Go Market Microservices
+🛒 Go Market Microservices
+Sistema de microservicios en Go para gestión de productos y pedidos
 
-Un sistema de microservicios desarrollado en Go que simula un mercado de productos y órdenes. Este proyecto fue creado como práctica para aplicar conceptos modernos como arquitectura hexagonal, gRPC, REST, contenedores con Docker y persistencia en PostgreSQL.
+📌 Descripción
+Este proyecto es un e-commerce modular basado en microservicios, desarrollado en Go (Golang), que utiliza:
 
-## 🚀 Tecnologías Utilizadas
+API Gateway (REST) como punto único de entrada.
 
-- **Go (Golang)**: Backend principal
-- **gRPC**: Comunicación entre microservicios
-- **REST (HTTP)**: Interfaz externa para creación de órdenes
-- **PostgreSQL**: Almacenamiento de productos y órdenes
-- **Docker & Docker Compose**: Orquestación y contenedores
-- **Arquitectura Hexagonal (Ports & Adapters)**
+gRPC para comunicación interna entre servicios.
 
-## 📦 Estructura de Microservicios
+PostgreSQL como base de datos principal.
 
-- `products-service`: Gestión de productos
-- `orders-service`: Creación de órdenes (HTTP + gRPC)
-- `PostgreSQL`: Base de datos compartida
+Docker para containerización y despliegue.
 
-## 🛠️ Cómo levantar el proyecto
+Ideal para aprender:
+✅ Arquitectura hexagonal (Ports & Adapters)
+✅ Comunicación entre servicios (gRPC + REST)
+✅ Manejo de contenedores con Docker Compose
 
-```bash
-docker-compose down --volumes
+🚀 Instalación
+Clonar el repositorio:
+
+bash
+git clone https://github.com/ramiroschettino/Go-Market-Microservices.git
+cd go-market-microservices
+Iniciar los servicios con Docker:
+
+bash
 docker-compose up --build -d
+Verificar que todo esté funcionando:
 
-Cómo crear una orden:
+bash
+curl http://localhost:8080/health
+# Respuesta esperada: {"status":"ok"}
+🔍 Uso
+1. Crear una nueva orden (vía API Gateway)
+Endpoint:
 
-POST a:
+http
+POST http://localhost:8080/orders
+Ejemplo de solicitud (JSON):
 
-http://localhost:8080/orders
-Con este body en JSON:
-
+json
 {
   "product_id": 1,
-  "product_name": "Teclado Logitech",
-  "product_description": "Teclado inalámbrico óptico",
-  "product_price": 300.99,
-  "quantity": 10
+  "product_name": "Mouse Logitech MX Master 3",
+  "product_description": "Mouse inalámbrico ergonómico",
+  "product_price": 99.99,
+  "quantity": 1
 }
+Respuesta exitosa:
+
+json
+{
+  "order_id": 101,
+  "product_id": 1,
+  "quantity": 1,
+  "total_price": 99.99
+}
+2. Consultar la base de datos (PostgreSQL)
+Acceder a la DB desde Docker:
+
+bash
+docker-compose exec postgres psql -U postgres -d products_db
+Comandos útiles dentro de PostgreSQL:
+
+sql
+-- Ver tablas disponibles
+\dt
+
+-- Consultar órdenes recientes
+SELECT * FROM orders LIMIT 5;
+
+-- Salir
+\q
+⚙️ Estructura del Proyecto
+bash
+.
+├── api-gateway/           # Punto de entrada (REST)
+├── orders-service/        # Procesamiento de pedidos (gRPC)
+├── products-service/      # Catálogo de productos (gRPC + DB)
+├── proto/                 # Definiciones de Protocol Buffers
+└── docker-compose.yml     # Configuración de contenedores
+📜 Comandos Útiles
+Comando	Descripción
+docker-compose logs -f	Ver logs en tiempo real
+docker-compose restart api-gateway	Reiniciar solo el API Gateway
+docker-compose down --volumes	Detener y eliminar todo (incluyendo datos)
+📌 Tecnologías
+Lenguaje: Go (Golang)
+
+Comunicación: gRPC (interno) + REST (público)
+
+Base de datos: PostgreSQL
+
+Contenedores: Docker + Docker Compose
