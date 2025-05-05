@@ -70,10 +70,10 @@ services:
   api-gateway:
     build:
       context: ./api-gateway
-      dockerfile: api-gateway/Dockerfile
+      dockerfile: Dockerfile
     container_name: api-gateway
     ports:
-      - "8080:8080" 
+      - "8081:8080"
     depends_on:
       orders-service:
         condition: service_healthy

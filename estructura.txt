@@ -1,4 +1,5 @@
 Listado de rutas de carpetas
+El n£mero de serie del volumen es C2D7-9C5E
 C:.
 |   .dockerignore
 |   docker-compose.yml
@@ -7,6 +8,28 @@ C:.
 |   go.work.sum
 |   README.md
 |   
++---api-gateway
+|   |   Dockerfile
+|   |   estructura.txt
+|   |   go.mod
+|   |   go.sum
+|   |   main.go
+|   |   
+|   +---internal
+|   |   +---client
+|   |   |       orders_client.go
+|   |   |       products_client.go
+|   |   |       
+|   |   \---handler
+|   |           order_handler.go
+|   |           routes.go
+|   |           
+|   +---router
+|   |       router.go
+|   |       
+|   \---utils
+|           logger.go
+|           
 +---common
 |   |   go.mod
 |   |   go.sum
