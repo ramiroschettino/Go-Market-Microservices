@@ -53,7 +53,7 @@ services:
       postgres:
         condition: service_healthy
       products-service:
-        condition: service_started # Cambiado de healthy a started
+        condition: service_started
     environment:
       DB_HOST: pg-products
       DB_USER: postgres
@@ -63,6 +63,20 @@ services:
       PRODUCTS_SERVICE_URL: "products-service:50051"
       DB_MAX_RETRIES: "10"
       DB_RETRY_DELAY: "5"
+    networks:
+      - market-net
+    restart: unless-stopped
+
+  api-gateway:
+    build:
+      context: ./api-gateway
+      dockerfile: api-gateway/Dockerfile
+    container_name: api-gateway
+    ports:
+      - "8080:8080" 
+    depends_on:
+      orders-service:
+        condition: service_healthy
     networks:
       - market-net
     restart: unless-stopped

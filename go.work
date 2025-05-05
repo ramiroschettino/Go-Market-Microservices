@@ -1,6 +1,7 @@
 go 1.23.6
 
 use (
+	./api-gateway
 	./common
 	./orders-service
 	./products-service
