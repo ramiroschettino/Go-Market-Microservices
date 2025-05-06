@@ -1,19 +1,14 @@
 package router
 
 import (
-	"net/http"
-
 	"github.com/gin-gonic/gin"
+	"github.com/ramiroschettino/Go-Market-Microservices/api-gateway/internal/handler"
 )
 
-func SetupRouter(orderClient any) *gin.Engine {
+func SetupRouter(orderHandler *handler.OrderHandler) *gin.Engine {
 	r := gin.Default()
 
-	r.POST("/orders", func(c *gin.Context) {
-		c.JSON(http.StatusOK, gin.H{
-			"message": "Aquí se creará una orden",
-		})
-	})
+	r.POST("/orders", orderHandler.CreateOrderHandler)
 
 	return r
 }
